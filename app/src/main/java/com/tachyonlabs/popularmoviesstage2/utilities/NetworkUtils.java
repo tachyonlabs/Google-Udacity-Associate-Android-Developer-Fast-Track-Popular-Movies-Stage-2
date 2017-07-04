@@ -1,6 +1,7 @@
 package com.tachyonlabs.popularmoviesstage2.utilities;
 
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,12 +12,14 @@ import java.util.Scanner;
 
 public class NetworkUtils {
     final static String API_KEY_PARAM = "api_key";
+    final static String API_LANGUAGE_PARAM = "language";
+    final static String API_PAGE_PARAM = "page";
     private static final String TAG = NetworkUtils.class.getSimpleName();
-    private static final String TMDB_BASE_URL = "http://api.themoviedb.org/3/movie/";
+    private static final String TMDB_MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie/";
 
-    public static URL buildUrl(String sortOrder, String tmdbApiKey) {
+    public static URL buildMoviesUrl(String sortOrder, String tmdbApiKey) {
         // build URL to return TMDb data in popular or top-rated sort order as desired
-        Uri builtUri = Uri.parse(TMDB_BASE_URL + sortOrder).buildUpon()
+        Uri builtUri = Uri.parse(TMDB_MOVIES_BASE_URL + sortOrder).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, tmdbApiKey)
                 .build();
 
@@ -26,6 +29,25 @@ public class NetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+        Log.d(TAG, url.toString());
+        return url;
+    }
+
+    public static URL buildReviewssUrl(String movieID, String tmdbApiKey) {
+        // build URL to return reviews for selected movie ID
+        Uri builtUri = Uri.parse(TMDB_MOVIES_BASE_URL + movieID + "/reviews").buildUpon()
+                .appendQueryParameter(API_KEY_PARAM, tmdbApiKey)
+                .appendQueryParameter(API_LANGUAGE_PARAM, "en-US")
+                .appendQueryParameter(API_PAGE_PARAM, "1")
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, url.toString());
         return url;
     }
 

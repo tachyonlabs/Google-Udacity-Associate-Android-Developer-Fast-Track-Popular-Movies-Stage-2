@@ -1,6 +1,7 @@
 package com.tachyonlabs.popularmoviesstage2;
 
 import com.tachyonlabs.popularmoviesstage2.PosterAdapter.PosterAdapterOnClickHandler;
+import com.tachyonlabs.popularmoviesstage2.databinding.ActivityMainBinding;
 import com.tachyonlabs.popularmoviesstage2.models.Movie;
 import com.tachyonlabs.popularmoviesstage2.utilities.NetworkUtils;
 import com.tachyonlabs.popularmoviesstage2.utilities.TmdbJsonUtils;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements PosterAdapterOnCl
     private static final String TOP_RATED = "top_rated";
     private static final String FAVORITES = "favorites";
 
+    ActivityMainBinding mBinding;
+    private String API_KEY;
     private RecyclerView mRecyclerView;
     private com.tachyonlabs.popularmoviesstage2.PosterAdapter mPosterAdapter;
     private TextView tvErrorMessageDisplay;
@@ -41,17 +45,19 @@ public class MainActivity extends AppCompatActivity implements PosterAdapterOnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        API_KEY = getApiKey();
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         // set up recyclerview and adapter to display the posters
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_posters);
-        tvErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
+        mRecyclerView = mBinding.rvPosters;
+        tvErrorMessageDisplay = mBinding.tvErrorMessageDisplay;
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(layoutManager);
         mPosterAdapter = new com.tachyonlabs.popularmoviesstage2.PosterAdapter(this);
         mRecyclerView.setAdapter(mPosterAdapter);
 
         // display progress bar, and load and display posters in preferred sort order
-        pbLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        pbLoadingIndicator = mBinding.pbLoadingIndicator;
         String sortOrder = getSortOrderSetting();
         loadPosters(sortOrder);
     }
@@ -75,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapterOnCl
         intent.putExtra("movie", movie);
         intent.putExtra("posters_base_url", com.tachyonlabs.popularmoviesstage2.PosterAdapter.POSTERS_BASE_URL);
         intent.putExtra("poster_width", com.tachyonlabs.popularmoviesstage2.PosterAdapter.POSTER_WIDTH);
+        intent.putExtra("tmdb_api_key", API_KEY);
         startActivity(intent);
     }
 
@@ -181,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapterOnCl
             String tmdbApiKey = getApiKey();
             String sortOrder = params[0];
 
-            URL postersRequestUrl = NetworkUtils.buildUrl(sortOrder, tmdbApiKey);
+            URL postersRequestUrl = NetworkUtils.buildMoviesUrl(sortOrder, tmdbApiKey);
 
             try {
                 String jsonTmdbResponse = NetworkUtils.getResponseFromHttpUrl(postersRequestUrl);

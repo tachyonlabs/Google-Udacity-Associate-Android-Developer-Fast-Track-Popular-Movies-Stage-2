@@ -9,6 +9,7 @@ public class Movie implements Parcelable {
     String posterUrl;
     String userRating;
     String releaseDate;
+    String id;
 
     public static final Parcelable.Creator<Movie> CREATOR
             = new Parcelable.Creator<Movie>() {
@@ -29,6 +30,7 @@ public class Movie implements Parcelable {
         posterUrl = in.readString();
         userRating = in.readString();
         releaseDate = in.readString();
+        id = in.readString();
     }
 
     public Movie() {
@@ -52,6 +54,14 @@ public class Movie implements Parcelable {
 
     public String getTitle() {
         return title;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void setTitle(String title) {
@@ -86,5 +96,6 @@ public class Movie implements Parcelable {
         parcel.writeString(posterUrl);
         parcel.writeString(userRating);
         parcel.writeString(releaseDate);
+        parcel.writeString(id);
     }
 }
