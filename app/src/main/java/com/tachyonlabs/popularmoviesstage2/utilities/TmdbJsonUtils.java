@@ -2,6 +2,7 @@ package com.tachyonlabs.popularmoviesstage2.utilities;
 
 import com.tachyonlabs.popularmoviesstage2.models.Movie;
 import com.tachyonlabs.popularmoviesstage2.models.Review;
+import com.tachyonlabs.popularmoviesstage2.models.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,8 +37,9 @@ public class TmdbJsonUtils {
 
     public static Review[] getReviewsFromJson(Context context, String reviewsJsonStr) throws JSONException {
         // Create an array of Movie objects using the TMDb JSON data
-        JSONObject reviewDataJson = new JSONObject(reviewsJsonStr);
+        JSONObject movieDataJson = new JSONObject(reviewsJsonStr);
 
+        JSONObject reviewDataJson = movieDataJson.getJSONObject("reviews");
         JSONArray resultsArray = reviewDataJson.getJSONArray("results");
 
         Review[] reviews = new Review[resultsArray.length()];
@@ -50,5 +52,26 @@ public class TmdbJsonUtils {
             reviews[i] = review;
         }
         return reviews;
+    }
+
+    public static Trailer[] getTrailersFromJson(Context context, String trailersJsonStr) throws JSONException {
+        // Create an array of Movie objects using the TMDb JSON data
+        JSONObject movieDataJson = new JSONObject(trailersJsonStr);
+
+        JSONObject trailerDataJson = movieDataJson.getJSONObject("videos");
+
+        JSONArray resultsArray = trailerDataJson.getJSONArray("results");
+
+        Trailer[] trailers = new Trailer[resultsArray.length()];
+
+        for (int i = 0; i < resultsArray.length(); i++) {
+            Trailer trailer = new Trailer();
+            JSONObject result = resultsArray.getJSONObject(i);
+            trailer.setName(result.getString("name"));
+            trailer.setSite(result.getString("site"));
+            trailer.setKey(result.getString("key"));
+            trailers[i] = trailer;
+        }
+        return trailers;
     }
 }

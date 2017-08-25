@@ -37,7 +37,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     @Override
     public void onBindViewHolder(PosterAdapterViewHolder holder, int position) {
         String posterUrl = POSTERS_BASE_URL + POSTER_WIDTH + mMovies[position].getPosterUrl();
-        // make an error image later too
+        // TODO make an error image later too
         Picasso.with(holder.ivPoster.getContext())
                 .load(posterUrl)
                 .placeholder(R.drawable.poster_placeholder)

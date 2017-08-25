@@ -12,8 +12,7 @@ import java.util.Scanner;
 
 public class NetworkUtils {
     final static String API_KEY_PARAM = "api_key";
-    final static String API_LANGUAGE_PARAM = "language";
-    final static String API_PAGE_PARAM = "page";
+    final static String API_APPEND_TO_RESPONSE_PARAM = "append_to_response";
     private static final String TAG = NetworkUtils.class.getSimpleName();
     private static final String TMDB_MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie/";
 
@@ -33,12 +32,11 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildReviewssUrl(String movieID, String tmdbApiKey) {
+    public static URL buildTrailersAndReviewsUrl(String movieID, String tmdbApiKey) {
         // build URL to return reviews for selected movie ID
-        Uri builtUri = Uri.parse(TMDB_MOVIES_BASE_URL + movieID + "/reviews").buildUpon()
+        Uri builtUri = Uri.parse(TMDB_MOVIES_BASE_URL + movieID).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, tmdbApiKey)
-                .appendQueryParameter(API_LANGUAGE_PARAM, "en-US")
-                .appendQueryParameter(API_PAGE_PARAM, "1")
+                .appendQueryParameter(API_APPEND_TO_RESPONSE_PARAM, "reviews,videos")
                 .build();
 
         URL url = null;

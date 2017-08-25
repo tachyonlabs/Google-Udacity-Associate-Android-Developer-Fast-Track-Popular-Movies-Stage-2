@@ -4,11 +4,13 @@ import com.squareup.picasso.Picasso;
 import com.tachyonlabs.popularmoviesstage2.databinding.ActivityDetailBinding;
 import com.tachyonlabs.popularmoviesstage2.models.Movie;
 import com.tachyonlabs.popularmoviesstage2.models.Review;
+import com.tachyonlabs.popularmoviesstage2.models.Trailer;
 import com.tachyonlabs.popularmoviesstage2.utilities.NetworkUtils;
 import com.tachyonlabs.popularmoviesstage2.utilities.TmdbJsonUtils;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,11 +21,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerAdapterOnClickHandler {
     private static final String TAG = DetailActivity.class.getSimpleName();
+    private static final String YOUTUBE_VIDEO_BASE_URL = "https://www.youtube.com/watch?v=";
     ActivityDetailBinding mBinding;
-    private RecyclerView mRecyclerView;
+    private RecyclerView mTrailersRecyclerView;
+    private com.tachyonlabs.popularmoviesstage2.TrailerAdapter mTrailerAdapter;
+    private RecyclerView mReviewsRecyclerView;
     private com.tachyonlabs.popularmoviesstage2.ReviewAdapter mReviewAdapter;
 
     @Override
@@ -32,12 +39,19 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
 
+        // set up recyclerview and adapter to display the trailers
+        mTrailersRecyclerView = mBinding.rvTrailers;
+        LinearLayoutManager trailersLayoutManager = new LinearLayoutManager(this);
+        mTrailersRecyclerView.setLayoutManager(trailersLayoutManager);
+        mTrailerAdapter = new com.tachyonlabs.popularmoviesstage2.TrailerAdapter(this);
+        mTrailersRecyclerView.setAdapter(mTrailerAdapter);
+
         // set up recyclerview and adapter to display the reviews
-        mRecyclerView = mBinding.rvReviews;
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
+        mReviewsRecyclerView = mBinding.rvReviews;
+        LinearLayoutManager reviewsLayoutManager = new LinearLayoutManager(this);
+        mReviewsRecyclerView.setLayoutManager(reviewsLayoutManager);
         mReviewAdapter = new com.tachyonlabs.popularmoviesstage2.ReviewAdapter();
-        mRecyclerView.setAdapter(mReviewAdapter);
+        mReviewsRecyclerView.setAdapter(mReviewAdapter);
 
         TextView tvTitle = mBinding.tvTitle;
         ImageView ivThumbnail = mBinding.ivThumbnail;
@@ -61,17 +75,23 @@ public class DetailActivity extends AppCompatActivity {
             // same poster URL used in the main activity
             Picasso.with(this).load(postersBaseUrl + posterWidth + movie.getPosterUrl()).into(ivThumbnail);
             tvOverview.setText(movie.getOverview());
-            loadReviews(id, tmdbApiKey);
+            loadTrailersAndReviews(id, tmdbApiKey);
         }
     }
 
-    private void loadReviews(String movieId, String apiKey) {
+    private void loadTrailersAndReviews(String movieId, String apiKey) {
         //showPosters();
-        new FetchReviewsTask().execute(movieId, apiKey, null);
+        new FetchTrailersAndReviewsTask().execute(movieId, apiKey, null);
     }
 
-    // using a background task, get the TMDb data and display the posters
-    public class FetchReviewsTask extends AsyncTask<String, String, Review[]> {//Movie[]> {
+    @Override
+    public void onClick(Trailer trailer) {
+        // tapping a trailer thumbnail brings up the trailer
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_VIDEO_BASE_URL + trailer.getKey())));
+    }
+
+    // using a background task, get the reviews and trailers data and display it
+    public class FetchTrailersAndReviewsTask extends AsyncTask<String, String, List<Object>> {//Movie[]> {
 
         @Override
         protected void onPreExecute() {
@@ -80,18 +100,24 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Review[] doInBackground(String... params) {
-            URL reviewsRequestUrl = NetworkUtils.buildReviewssUrl(params[0], params[1]);
-
+        protected List<Object> doInBackground(String... params) {
+            URL trailersAndReviewsRequestUrl = NetworkUtils.buildTrailersAndReviewsUrl(params[0], params[1]);
+            Log.d(TAG, trailersAndReviewsRequestUrl.toString());
             try {
-                String jsonTmdbResponse = NetworkUtils.getResponseFromHttpUrl(reviewsRequestUrl);
+                String jsonTmdbResponse = NetworkUtils.getResponseFromHttpUrl(trailersAndReviewsRequestUrl);
 
                 Review[] reviewsFromJson = TmdbJsonUtils.getReviewsFromJson(DetailActivity.this, jsonTmdbResponse);
                 for (int i = 0; i < reviewsFromJson.length; i++) {
                     Log.d(TAG, reviewsFromJson[i].getAuthor());
                 }
 
-                return reviewsFromJson;
+                Trailer[] trailersFromJson = TmdbJsonUtils.getTrailersFromJson(DetailActivity.this, jsonTmdbResponse);
+
+                List<Object> reviewsAndTrailers = new ArrayList<Object>();
+                reviewsAndTrailers.add(reviewsFromJson);
+                reviewsAndTrailers.add(trailersFromJson);
+
+                return reviewsAndTrailers;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -101,11 +127,16 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Review[] reviews) {
+        protected void onPostExecute(List<Object> reviewsAndTrailers) {
             //pbLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (reviews != null) {
+            if (reviewsAndTrailers != null) {
                 //showPosters();
+                Review[] reviews = (Review[]) reviewsAndTrailers.get(0);
                 mReviewAdapter.setReviewData(reviews);
+
+                Trailer[] trailers = (Trailer[]) reviewsAndTrailers.get(1);
+                mTrailerAdapter.setTrailerData(trailers);
+
             } else {
                 //showErrorMessage("No data was received - please check your Internet connection and try again.");
             }
