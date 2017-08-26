@@ -10,7 +10,9 @@
                 android:id="@+id/tv_review_author"
                 android:layout_marginLeft="24dp"
                 android:layout_marginRight="24dp"
-                android:textSize="20sp"
+                android:textSize="16sp"
+                android:textColor="@color/accent_material_dark_1"
+                android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -18,10 +20,8 @@
                 android:id="@+id/tv_review_content"
                 android:layout_marginLeft="24dp"
                 android:layout_marginRight="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="12dp"
                 android:textSize="16sp"
-                android:maxLines="3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

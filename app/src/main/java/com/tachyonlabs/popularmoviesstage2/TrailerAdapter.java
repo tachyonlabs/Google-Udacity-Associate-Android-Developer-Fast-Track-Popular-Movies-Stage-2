@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder> {
     private static final String TAG = TrailerAdapter.class.getSimpleName();
@@ -43,8 +42,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
                 .load(thumbnailUrl)
                 .placeholder(R.drawable.poster_placeholder)
                 .into(holder.ivTrailerThumbnail);
-
-        holder.tvTrailerName.setText(mTrailers[position].getName());
     }
 
     @Override
@@ -66,12 +63,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     }
 
     public class TrailerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView tvTrailerName;
         public final ImageView ivTrailerThumbnail;
 
         public TrailerAdapterViewHolder(View itemView) {
             super(itemView);
-            tvTrailerName = (TextView) itemView.findViewById(R.id.tv_trailer_name);
             ivTrailerThumbnail = (ImageView) itemView.findViewById(R.id.iv_trailer_thumbnail);
             itemView.setOnClickListener(this);
         }

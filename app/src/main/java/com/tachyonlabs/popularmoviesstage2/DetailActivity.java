@@ -41,7 +41,8 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
         // set up recyclerview and adapter to display the trailers
         mTrailersRecyclerView = mBinding.rvTrailers;
-        LinearLayoutManager trailersLayoutManager = new LinearLayoutManager(this);
+        //LinearLayoutManager trailersLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager trailersLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mTrailersRecyclerView.setLayoutManager(trailersLayoutManager);
         mTrailerAdapter = new com.tachyonlabs.popularmoviesstage2.TrailerAdapter(this);
         mTrailersRecyclerView.setAdapter(mTrailerAdapter);
