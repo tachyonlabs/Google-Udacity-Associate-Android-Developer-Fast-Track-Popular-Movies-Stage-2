@@ -13,12 +13,15 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,6 +35,8 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     private com.tachyonlabs.popularmoviesstage2.TrailerAdapter mTrailerAdapter;
     private RecyclerView mReviewsRecyclerView;
     private com.tachyonlabs.popularmoviesstage2.ReviewAdapter mReviewAdapter;
+    private boolean favorited = true;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +46,6 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
         // set up recyclerview and adapter to display the trailers
         mTrailersRecyclerView = mBinding.rvTrailers;
-        //LinearLayoutManager trailersLayoutManager = new LinearLayoutManager(this);
         LinearLayoutManager trailersLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mTrailersRecyclerView.setLayoutManager(trailersLayoutManager);
         mTrailerAdapter = new com.tachyonlabs.popularmoviesstage2.TrailerAdapter(this);
@@ -58,11 +62,12 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         ImageView ivThumbnail = mBinding.ivThumbnail;
         TextView tvOverview = mBinding.tvOverview;
         TextView tvRating = mBinding.tvRating;
+        fab = mBinding.fab;
 
         Intent callingIntent = getIntent();
 
         if (callingIntent.hasExtra("movie")) {
-            Movie movie = callingIntent.getParcelableExtra("movie");
+            final Movie movie = callingIntent.getParcelableExtra("movie");
             String postersBaseUrl = callingIntent.getStringExtra("posters_base_url");
             String posterWidth = callingIntent.getStringExtra("poster_width");
 
@@ -77,6 +82,21 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
             Picasso.with(this).load(postersBaseUrl + posterWidth + movie.getPosterUrl()).into(ivThumbnail);
             tvOverview.setText(movie.getOverview());
             loadTrailersAndReviews(id, tmdbApiKey);
+
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (favorited) {
+                        favorited = false;
+                        fab.setImageResource(R.drawable.ic_mark_favorite);
+                        Toast.makeText(DetailActivity.this, movie.getTitle() + DetailActivity.this.getString(R.string.unfavorited), Toast.LENGTH_SHORT).show();
+                    } else {
+                        favorited = true;
+                        fab.setImageResource(R.drawable.ic_unfavorite);
+                        Toast.makeText(DetailActivity.this, movie.getTitle() + DetailActivity.this.getString(R.string.favorited), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
 
@@ -122,7 +142,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.d(TAG, "error");
+                Log.d(TAG, (String) getText(R.string.error_message));
                 return null;
             }
         }

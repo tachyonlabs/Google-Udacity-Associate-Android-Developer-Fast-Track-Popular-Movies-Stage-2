@@ -5,6 +5,7 @@ import com.tachyonlabs.popularmoviesstage2.models.Trailer;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,10 +38,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     @Override
     public void onBindViewHolder(TrailerAdapterViewHolder holder, int position) {
         String thumbnailUrl = YOUTUBE_THUMBNAIL_BASE_URL + mTrailers[position].getKey() + YOUTUBE_DEFAULT_THUMBNAIL;
-        // TODO add placeholder and error image later
+        Log.d(TAG, thumbnailUrl);
         Picasso.with(holder.ivTrailerThumbnail.getContext())
                 .load(thumbnailUrl)
-                .placeholder(R.drawable.poster_placeholder)
+                .placeholder(R.drawable.trailer_placeholder)
                 .into(holder.ivTrailerThumbnail);
     }
 

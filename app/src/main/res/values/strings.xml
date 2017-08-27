@@ -9,6 +9,8 @@
     <string name="movie_rating">\u2606 %1$s</string>
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
+    <string name="favorited">\u0020favorited!</string>
+    <string name="unfavorited">\u0020unfavorited!</string>
     <string-array name="sort_orders">
         <item>Popular</item>
         <item>Top-rated</item>

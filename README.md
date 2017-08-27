@@ -22,13 +22,13 @@ Meets Specifications:
 * [x] When a user changes the sort criteria (most popular, highest rated, and favorites) the main view gets updated correctly.
 * [x] When a movie poster thumbnail is selected, the movie details screen is launched.
 * [x] When a trailer is selected, app uses an Intent to launch the trailer.
-* [ ] In the movies detail screen, a user can tap a button(for example, a star) to mark it as a Favorite.
+* [x] In the movies detail screen, a user can tap a button(for example, a star) to mark it as a Favorite.
 
 ### Network API Implementation
 Meets Specifications:
 
 * [x] In a background thread, app queries the /movie/popular or /movie/top_rated API for the sort criteria specified in the settings menu.
-* [ ] App requests for related videos for a selected movie via the /movie/{id}/videos endpoint in a background thread and displays those details when the user selects a movie.
+* [x] App requests for trailers for a selected movie via the /movie/{id}/videos endpoint in a background thread and displays those details when the user selects a movie.
 * [x] App requests for user reviews for a selected movie via the /movie/{id}/reviews endpoint in a background thread and displays those details when the user selects a movie.
 
 ### Data Persistence
