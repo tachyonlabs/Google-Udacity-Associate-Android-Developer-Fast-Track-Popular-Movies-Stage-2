@@ -11,6 +11,8 @@
     <string name="reviews">Reviews</string>
     <string name="favorited">\u0020favorited!</string>
     <string name="unfavorited">\u0020unfavorited!</string>
+    <string name="no_data_received">No data was received - please check your Internet connection and try again.</string>
+    <string name="no_favorites_yet">You\'re not seeing any posters because you haven\'t favorited any movies yet.\n\nChange your poster sort order settings to \'Popular\' or \'Top-rated\', tap a poster to select a movie, and then tap the star button to favorite it.</string>
     <string-array name="sort_orders">
         <item>Popular</item>
         <item>Top-rated</item>

@@ -1,5 +1,5 @@
 # Popular Movies, Stage 2
-When complete this will be my submission for the second project in the Google/Udacity "Associate Android Developer Fast Track" course, but right now I'm still working on it.
+When complete this will be my submission for the second project in the Google/Udacity "Associate Android Developer Fast Track" course. I'm pleased to say that everything is now working -- I just need to do some more cleanup before submitting! :-)
 
 ### Common Project Requirements
 Meets Specifications:
@@ -34,8 +34,8 @@ Meets Specifications:
 ### Data Persistence
 Meets Specifications:
 
-* [ ] The titles and ids of the user's favorite movies are stored in a ContentProvider backed by a SQLite database. This ContentProvider is updated whenever the user favorites or unfavorites a movie.
-* [ ] When the "favorites" setting option is selected, the main view displays the entire favorites collection based on movie ids stored in the ContentProvider.
+* [x] The titles and ids of the user's favorite movies are stored in a ContentProvider backed by a SQLite database. This ContentProvider is updated whenever the user favorites or unfavorites a movie.
+* [x] When the "favorites" setting option is selected, the main view displays the entire favorites collection based on movie ids stored in the ContentProvider.
 
 ### Notes
 To run this app, you will need to replace "your API key here" in the following section of AndroidManifest.xml --

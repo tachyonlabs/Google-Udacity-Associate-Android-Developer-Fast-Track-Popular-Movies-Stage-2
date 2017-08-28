@@ -1,6 +1,7 @@
 package com.tachyonlabs.popularmoviesstage2;
 
 import com.squareup.picasso.Picasso;
+import com.tachyonlabs.popularmoviesstage2.data.FavoritesContract;
 import com.tachyonlabs.popularmoviesstage2.databinding.ActivityDetailBinding;
 import com.tachyonlabs.popularmoviesstage2.models.Movie;
 import com.tachyonlabs.popularmoviesstage2.models.Review;
@@ -8,7 +9,9 @@ import com.tachyonlabs.popularmoviesstage2.models.Trailer;
 import com.tachyonlabs.popularmoviesstage2.utilities.NetworkUtils;
 import com.tachyonlabs.popularmoviesstage2.utilities.TmdbJsonUtils;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -35,8 +38,9 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     private com.tachyonlabs.popularmoviesstage2.TrailerAdapter mTrailerAdapter;
     private RecyclerView mReviewsRecyclerView;
     private com.tachyonlabs.popularmoviesstage2.ReviewAdapter mReviewAdapter;
-    private boolean favorited = true;
+    private boolean favorited = false;
     private FloatingActionButton fab;
+    private String sortOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +74,13 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
             final Movie movie = callingIntent.getParcelableExtra("movie");
             String postersBaseUrl = callingIntent.getStringExtra("posters_base_url");
             String posterWidth = callingIntent.getStringExtra("poster_width");
+            sortOrder = callingIntent.getStringExtra("sortorder");
+            if (sortOrder.equals(MainActivity.SORT_ORDER_FAVORITES) || isFavorited(movie.getId())) {
+                favorited = true;
+            }
+            setFabIcon(favorited);
 
-            String titleAndYear = String.format(getString(R.string.movie_title_and_year), movie.getTitle(), movie.getReleaseDate().substring(0,4));
+            String titleAndYear = String.format(getString(R.string.movie_title_and_year), movie.getTitle(), movie.getReleaseDate().substring(0, 4));
             String rating = String.format(getString(R.string.movie_rating), movie.getUserRating());
             String id = movie.getId();
             String tmdbApiKey = callingIntent.getStringExtra("tmdb_api_key");
@@ -87,16 +96,48 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
                 @Override
                 public void onClick(View view) {
                     if (favorited) {
-                        favorited = false;
-                        fab.setImageResource(R.drawable.ic_mark_favorite);
+                        String mSelectionClause = FavoritesContract.Favorite.COLUMN_MOVIE_ID + " = ?";
+                        String[] mSelectionArgs = {movie.getId()};
+                        int mRowsDeleted = getContentResolver().delete(FavoritesContract.Favorite.CONTENT_URI, mSelectionClause, mSelectionArgs);
                         Toast.makeText(DetailActivity.this, movie.getTitle() + DetailActivity.this.getString(R.string.unfavorited), Toast.LENGTH_SHORT).show();
                     } else {
-                        favorited = true;
-                        fab.setImageResource(R.drawable.ic_unfavorite);
-                        Toast.makeText(DetailActivity.this, movie.getTitle() + DetailActivity.this.getString(R.string.favorited), Toast.LENGTH_SHORT).show();
+                        // Insert new favorite data via a ContentResolver
+                        // Create new empty ContentValues object
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_TITLE, movie.getTitle());
+                        contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_OVERVIEW, movie.getOverview());
+                        contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_POSTER_URL, movie.getPosterUrl());
+                        contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_USER_RATING, movie.getUserRating());
+                        contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_RELEASE_DATE, movie.getReleaseDate());
+                        contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_ID, movie.getId());
+                        // Insert the content values via a ContentResolver
+                        Uri uri = getContentResolver().insert(FavoritesContract.Favorite.CONTENT_URI, contentValues);
+                        if (uri != null) {
+                            Toast.makeText(DetailActivity.this, movie.getTitle() + DetailActivity.this.getString(R.string.favorited), Toast.LENGTH_SHORT).show();
+                        }
                     }
+                    favorited = !favorited;
+                    setFabIcon(favorited);
                 }
             });
+        }
+    }
+
+    private boolean isFavorited(String movieId) {
+        // Has the movie already been favorited?
+        String mSelectionClause = FavoritesContract.Favorite.COLUMN_MOVIE_ID + " = ?";
+        String[] mSelectionArgs = {movieId};
+        Cursor mCursor = getContentResolver().query(FavoritesContract.Favorite.CONTENT_URI, null, mSelectionClause, mSelectionArgs, null);                       // The sort order for the returned rows
+        boolean movieIsFavorited = (mCursor != null && mCursor.getCount() == 1);
+        mCursor.close();
+        return movieIsFavorited;
+    }
+
+    private void setFabIcon(boolean favorited) {
+        if (favorited) {
+            fab.setImageResource(R.drawable.ic_unfavorite);
+        } else {
+            fab.setImageResource(R.drawable.ic_mark_favorite);
         }
     }
 
@@ -123,14 +164,10 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         @Override
         protected List<Object> doInBackground(String... params) {
             URL trailersAndReviewsRequestUrl = NetworkUtils.buildTrailersAndReviewsUrl(params[0], params[1]);
-            Log.d(TAG, trailersAndReviewsRequestUrl.toString());
             try {
                 String jsonTmdbResponse = NetworkUtils.getResponseFromHttpUrl(trailersAndReviewsRequestUrl);
 
                 Review[] reviewsFromJson = TmdbJsonUtils.getReviewsFromJson(DetailActivity.this, jsonTmdbResponse);
-                for (int i = 0; i < reviewsFromJson.length; i++) {
-                    Log.d(TAG, reviewsFromJson[i].getAuthor());
-                }
 
                 Trailer[] trailersFromJson = TmdbJsonUtils.getTrailersFromJson(DetailActivity.this, jsonTmdbResponse);
 
