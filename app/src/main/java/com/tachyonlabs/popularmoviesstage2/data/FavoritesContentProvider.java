@@ -18,15 +18,17 @@ public class FavoritesContentProvider extends ContentProvider {
     // It's convention to use 100, 200, 300, etc for directories,
     // and related ints (101, 102, ..) for items in that directory.
     public static final int FAVORITES = 100;
-    public static final int FAVORITE_WITH_ID = 101;
 
     // CDeclare a static variable for the Uri matcher that you construct
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     // Define a static buildUriMatcher method that associates URI's with their int match
+    // Member variable for a FavoritesDbHelper that's initialized in the onCreate() method
+    private FavoritesDbHelper mFavoritesDbHelper;
+
     /**
-     Initialize a new matcher object without any matches,
-     then use .addURI(String authority, String path, int match) to add matches
+     * Initialize a new matcher object without any matches,
+     * then use .addURI(String authority, String path, int match) to add matches
      */
     public static UriMatcher buildUriMatcher() {
 
@@ -39,24 +41,13 @@ public class FavoritesContentProvider extends ContentProvider {
           The two calls below add matches for the favorites directory and a single item by ID.
          */
         uriMatcher.addURI(FavoritesContract.AUTHORITY, FavoritesContract.PATH_FAVORITES, FAVORITES);
-        uriMatcher.addURI(FavoritesContract.AUTHORITY, FavoritesContract.PATH_FAVORITES + "/#", FAVORITE_WITH_ID);
 
         return uriMatcher;
     }
 
-    // Member variable for a FavoritesDbHelper that's initialized in the onCreate() method
-    private FavoritesDbHelper mFavoritesDbHelper;
-
-    /* onCreate() is where you should initialize anything you’ll need to setup
-your underlying data source.
-In this case, you’re working with a SQLite database, so you’ll need to
-initialize a DbHelper to gain access to it.
- */
     @Override
     public boolean onCreate() {
         // Complete onCreate() and initialize a FavoritesDbHelper on startup
-        // [Hint] Declare the DbHelper as a global variable
-
         Context context = getContext();
         mFavoritesDbHelper = new FavoritesDbHelper(context);
         return true;
@@ -74,10 +65,9 @@ initialize a DbHelper to gain access to it.
 
         switch (match) {
             case FAVORITES:
-                // Insert new values into the database
-                // Inserting values into favorites table
+                // Inserting favorited movie into favorites table
                 long id = db.insert(TABLE_NAME, null, values);
-                if ( id > 0 ) {
+                if (id > 0) {
                     returnUri = ContentUris.withAppendedId(FavoritesContract.Favorite.CONTENT_URI, id);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
@@ -108,17 +98,10 @@ initialize a DbHelper to gain access to it.
         int match = sUriMatcher.match(uri);
         Cursor retCursor;
 
-        // Query for the favorites directory and write a default case
         switch (match) {
-            // Query for the favorites directory
+            // Query to see if a movie has been favorited
             case FAVORITES:
-                retCursor =  db.query(TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder);
+                retCursor = db.query(TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             // Default exception
             default:
@@ -132,27 +115,14 @@ initialize a DbHelper to gain access to it.
         return retCursor;
     }
 
-    // Implement delete to delete a single row of data
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-
-        // COMPLETED (1) Get access to the database and write URI matching code to recognize a single item
         final SQLiteDatabase db = mFavoritesDbHelper.getWritableDatabase();
-
         int match = sUriMatcher.match(uri);
-        // Keep track of the number of deleted favorites
-        int favoritesDeleted; // starts as 0
+        int favoritesDeleted;
 
-        // COMPLETED (2) Write the code to delete a single row of data
-        // [Hint] Use selections to delete an item by its row ID
         switch (match) {
             // Handle the single item case, recognized by the ID included in the URI path
-            case FAVORITE_WITH_ID:
-                // Get the favorite ID from the URI path
-                String id = uri.getPathSegments().get(1);
-                // Use selections/selectionArgs to filter for this ID
-                favoritesDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
-                break;
             case FAVORITES:
                 favoritesDeleted = db.delete(TABLE_NAME, selection, selectionArgs);
                 break;
@@ -171,16 +141,13 @@ initialize a DbHelper to gain access to it.
     }
 
     @Override
-    public int update(@NonNull Uri uri, ContentValues values, String selection,
-                      String[] selectionArgs) {
-
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
 
     @Override
     public String getType(@NonNull Uri uri) {
-
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

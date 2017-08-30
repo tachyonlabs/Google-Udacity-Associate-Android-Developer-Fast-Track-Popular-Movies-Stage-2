@@ -14,12 +14,10 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version
     private static final int VERSION = 1;
 
-
     // Constructor
     FavoritesDbHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
-
 
     /**
      * Called when the favorites database is created for the first time.

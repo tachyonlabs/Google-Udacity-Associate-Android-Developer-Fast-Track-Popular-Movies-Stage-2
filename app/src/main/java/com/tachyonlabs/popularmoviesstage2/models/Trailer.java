@@ -5,6 +5,9 @@ public class Trailer {
     String site;
     String key;
 
+    public Trailer() {
+    }
+
     public String getKey() {
         return key;
     }
@@ -14,15 +17,11 @@ public class Trailer {
     }
 
     public String getSite() {
-
         return site;
     }
 
     public void setSite(String site) {
         this.site = site;
-    }
-
-    public Trailer() {
     }
 
     public String getName() {

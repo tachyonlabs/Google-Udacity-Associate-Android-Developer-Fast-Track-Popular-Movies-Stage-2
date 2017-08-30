@@ -1,7 +1,6 @@
 package com.tachyonlabs.popularmoviesstage2.utilities;
 
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +27,7 @@ public class NetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, url.toString());
+
         return url;
     }
 
@@ -45,7 +44,7 @@ public class NetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, url.toString());
+
         return url;
     }
 

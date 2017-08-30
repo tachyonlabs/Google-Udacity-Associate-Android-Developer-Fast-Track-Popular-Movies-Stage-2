@@ -14,7 +14,7 @@ import android.widget.ImageView;
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder> {
     private static final String TAG = TrailerAdapter.class.getSimpleName();
     public static final String YOUTUBE_THUMBNAIL_BASE_URL = "https://img.youtube.com/vi/";
-    public static final String YOUTUBE_DEFAULT_THUMBNAIL = "/hqdefault.jpg";
+    public static final String YOUTUBE_DEFAULT_THUMBNAIL = "/default.jpg";
     final private TrailerAdapterOnClickHandler mClickHandler;
     private Trailer[] mTrailers;
 

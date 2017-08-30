@@ -36,7 +36,7 @@ public class TmdbJsonUtils {
     }
 
     public static Review[] getReviewsFromJson(Context context, String reviewsJsonStr) throws JSONException {
-        // Create an array of Movie objects using the TMDb JSON data
+        // Create an array of Review objects using the TMDb JSON data
         JSONObject movieDataJson = new JSONObject(reviewsJsonStr);
 
         JSONObject reviewDataJson = movieDataJson.getJSONObject("reviews");
@@ -55,7 +55,7 @@ public class TmdbJsonUtils {
     }
 
     public static Trailer[] getTrailersFromJson(Context context, String trailersJsonStr) throws JSONException {
-        // Create an array of Movie objects using the TMDb JSON data
+        // Create an array of Trailer objects using the TMDb JSON data
         JSONObject movieDataJson = new JSONObject(trailersJsonStr);
 
         JSONObject trailerDataJson = movieDataJson.getJSONObject("videos");

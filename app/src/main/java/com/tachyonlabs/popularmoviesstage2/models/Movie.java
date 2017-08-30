@@ -4,13 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Movie implements Parcelable {
-    String title;
-    String overview;
-    String posterUrl;
-    String userRating;
-    String releaseDate;
-    String id;
-
     public static final Parcelable.Creator<Movie> CREATOR
             = new Parcelable.Creator<Movie>() {
 
@@ -24,6 +17,13 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
+    String title;
+    String overview;
+    String posterUrl;
+    String userRating;
+    String releaseDate;
+    String id;
+
     private Movie(Parcel in) {
         title = in.readString();
         overview = in.readString();
@@ -56,16 +56,16 @@ public class Movie implements Parcelable {
         return title;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getOverview() {

@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +39,9 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     private com.tachyonlabs.popularmoviesstage2.TrailerAdapter mTrailerAdapter;
     private RecyclerView mReviewsRecyclerView;
     private com.tachyonlabs.popularmoviesstage2.ReviewAdapter mReviewAdapter;
-    private boolean favorited = false;
+    private ProgressBar pbLoadingIndicator;
     private FloatingActionButton fab;
+    private boolean favorited = false;
     private String sortOrder;
 
     @Override
@@ -67,6 +69,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         TextView tvOverview = mBinding.tvOverview;
         TextView tvRating = mBinding.tvRating;
         fab = mBinding.fab;
+        pbLoadingIndicator = mBinding.pbDetailLoadingIndicator;
 
         Intent callingIntent = getIntent();
 
@@ -75,6 +78,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
             String postersBaseUrl = callingIntent.getStringExtra("posters_base_url");
             String posterWidth = callingIntent.getStringExtra("poster_width");
             sortOrder = callingIntent.getStringExtra("sortorder");
+            // if the movie has been favorited then show the unfavorite button instead of favorite
             if (sortOrder.equals(MainActivity.SORT_ORDER_FAVORITES) || isFavorited(movie.getId())) {
                 favorited = true;
             }
@@ -96,6 +100,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
                 @Override
                 public void onClick(View view) {
                     if (favorited) {
+                        // if they're unfavoriting a favorite, delete it from the favorites database
                         String mSelectionClause = FavoritesContract.Favorite.COLUMN_MOVIE_ID + " = ?";
                         String[] mSelectionArgs = {movie.getId()};
                         int mRowsDeleted = getContentResolver().delete(FavoritesContract.Favorite.CONTENT_URI, mSelectionClause, mSelectionArgs);
@@ -142,7 +147,6 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     }
 
     private void loadTrailersAndReviews(String movieId, String apiKey) {
-        //showPosters();
         new FetchTrailersAndReviewsTask().execute(movieId, apiKey, null);
     }
 
@@ -158,7 +162,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //pbLoadingIndicator.setVisibility(View.VISIBLE);
+            pbLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -166,9 +170,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
             URL trailersAndReviewsRequestUrl = NetworkUtils.buildTrailersAndReviewsUrl(params[0], params[1]);
             try {
                 String jsonTmdbResponse = NetworkUtils.getResponseFromHttpUrl(trailersAndReviewsRequestUrl);
-
                 Review[] reviewsFromJson = TmdbJsonUtils.getReviewsFromJson(DetailActivity.this, jsonTmdbResponse);
-
                 Trailer[] trailersFromJson = TmdbJsonUtils.getTrailersFromJson(DetailActivity.this, jsonTmdbResponse);
 
                 List<Object> reviewsAndTrailers = new ArrayList<Object>();
@@ -186,9 +188,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
         @Override
         protected void onPostExecute(List<Object> reviewsAndTrailers) {
-            //pbLoadingIndicator.setVisibility(View.INVISIBLE);
             if (reviewsAndTrailers != null) {
-                //showPosters();
                 Review[] reviews = (Review[]) reviewsAndTrailers.get(0);
                 mReviewAdapter.setReviewData(reviews);
 
@@ -196,8 +196,9 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
                 mTrailerAdapter.setTrailerData(trailers);
 
             } else {
-                //showErrorMessage("No data was received - please check your Internet connection and try again.");
+                Toast.makeText(DetailActivity.this, R.string.no_data_received, Toast.LENGTH_LONG).show();
             }
+            pbLoadingIndicator.setVisibility(View.INVISIBLE);
         }
     }
 

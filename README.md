@@ -1,11 +1,11 @@
 # Popular Movies, Stage 2
-When complete this will be my submission for the second project in the Google/Udacity "Associate Android Developer Fast Track" course. I'm pleased to say that everything is now working -- I just need to do some more cleanup before submitting! :-)
+My submission for the second project in the Google/Udacity "Associate Android Developer Fast Track" course.
 
 ### Common Project Requirements
 Meets Specifications:
 
 * [x] App is written solely in the Java Programming Language.
-* [ ] App conforms to common standards found in the Android Nanodegree General Project Guidelines.
+* [x] App conforms to common standards found in the Android Nanodegree General Project Guidelines.
 
 ### User Interface - Layout
 Meets Specifications:
