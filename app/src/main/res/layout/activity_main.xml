@@ -15,15 +15,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:padding="16dp"
+                android:padding="@dimen/error_message_padding"
                 android:text="@string/error_message"
-                android:textSize="20sp"
+                android:textSize="@dimen/error_message_text_size"
                 android:visibility="invisible"/>
 
         <ProgressBar
                 android:id="@+id/pb_loading_indicator"
-                android:layout_height="42dp"
-                android:layout_width="42dp"
+                android:layout_height="@dimen/loading_indicator_width_and_height"
+                android:layout_width="@dimen/loading_indicator_width_and_height"
                 android:layout_gravity="center"
                 android:visibility="invisible"/>
     </FrameLayout>

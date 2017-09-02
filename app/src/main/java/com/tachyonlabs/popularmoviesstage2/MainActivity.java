@@ -30,7 +30,7 @@ import android.widget.TextView;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements PosterAdapterOnClickHandler { //}, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity implements PosterAdapterOnClickHandler {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String SORT_ORDER_POPULAR = "popular";
     private static final String SORT_ORDER_TOP_RATED = "top_rated";

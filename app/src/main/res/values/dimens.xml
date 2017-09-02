@@ -3,4 +3,17 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="headers_and_ratings_text_size">24sp</dimen>
+    <dimen name="overview_and_reviews_text_size">16sp</dimen>
+    <dimen name="larger_details_margin">24dp</dimen>
+    <dimen name="smaller_details_margin">16dp</dimen>
+    <dimen name="trailer_thumbnail_width">120dp</dimen>
+    <dimen name="trailer_thumbnail_height">90dp</dimen>
+    <dimen name="loading_indicator_width_and_height">42dp</dimen>
+    <dimen name="review_bottom_margin">12dp</dimen>
+    <dimen name="review_item_divider_bottom_margin">8dp</dimen>
+    <dimen name="error_message_text_size">20sp</dimen>
+    <dimen name="error_message_padding">16dp</dimen>
+    <dimen name="general_details_padding">24dp</dimen>
+    <dimen name="title_right_padding">96dp</dimen>
 </resources>

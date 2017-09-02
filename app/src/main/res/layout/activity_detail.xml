@@ -9,8 +9,8 @@
             android:layout_height="match_parent">
         <ProgressBar
                 android:id="@+id/pb_detail_loading_indicator"
-                android:layout_height="42dp"
-                android:layout_width="42dp"
+                android:layout_height="@dimen/loading_indicator_width_and_height"
+                android:layout_width="@dimen/loading_indicator_width_and_height"
                 android:layout_gravity="center"
                 android:visibility="invisible"/>
 
@@ -22,29 +22,31 @@
 
             <TextView
                     android:id="@+id/tv_title"
-                    android:paddingTop="24dp"
-                    android:paddingBottom="24dp"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="96dp"
-                    android:textSize="24sp"
+                    android:paddingTop="@dimen/general_details_padding"
+                    android:paddingBottom="@dimen/general_details_padding"
+                    android:paddingLeft="@dimen/general_details_padding"
+                    android:paddingRight="@dimen/title_right_padding"
+                    android:textSize="@dimen/headers_and_ratings_text_size"
                     android:background="@color/accent_material_dark_1"
                     android:textColor="@android:color/white"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    tools:text="Title of the Movie"/>
 
             <TextView
                     android:id="@+id/tv_rating"
-                    android:paddingTop="24dp"
-                    android:paddingRight="24dp"
-                    android:textSize="24sp"
+                    android:paddingTop="@dimen/general_details_padding"
+                    android:paddingRight="@dimen/general_details_padding"
+                    android:textSize="@dimen/headers_and_ratings_text_size"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
                     android:background="@color/accent_material_dark_1"
                     android:textColor="@android:color/white"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    tools:text="\u2606 7.5" />
 
             <ScrollView
                     android:layout_alignParentLeft="true"
@@ -70,10 +72,11 @@
                         <TextView
                                 android:id="@+id/tv_overview"
                                 android:layout_weight="2"
-                                android:layout_margin="16dp"
-                                android:textSize="16sp"
+                                android:layout_margin="@dimen/smaller_details_margin"
+                                android:textSize="@dimen/overview_and_reviews_text_size"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content"
+                                tools:text="The movie overview goes here. It will be multiple sentences long."/>
 
                     </LinearLayout>
 
@@ -81,9 +84,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:id="@+id/divider_1"
-                            android:layout_marginLeft="24dp"
-                            android:layout_marginRight="24dp"
-                            android:layout_marginTop="24dp"
+                            android:layout_marginLeft="@dimen/larger_details_margin"
+                            android:layout_marginRight="@dimen/larger_details_margin"
+                            android:layout_marginTop="@dimen/larger_details_margin"
                             android:background="@color/accent_material_dark_1"/>
 
                     <TextView
@@ -91,14 +94,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/accent_material_dark_1"
-                            android:textSize="24sp"
-                            android:padding="24dp"
+                            android:textSize="@dimen/headers_and_ratings_text_size"
+                            android:padding="@dimen/general_details_padding"
                             android:text="@string/trailers"/>
 
                     <android.support.v7.widget.RecyclerView
                             android:id="@+id/rv_trailers"
-                            android:layout_marginLeft="24dp"
-                            android:layout_marginRight="24dp"
+                            android:layout_marginLeft="@dimen/larger_details_margin"
+                            android:layout_marginRight="@dimen/larger_details_margin"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
 
@@ -106,9 +109,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:id="@+id/divider_2"
-                            android:layout_marginLeft="24dp"
-                            android:layout_marginRight="24dp"
-                            android:layout_marginTop="24dp"
+                            android:layout_marginLeft="@dimen/larger_details_margin"
+                            android:layout_marginRight="@dimen/larger_details_margin"
+                            android:layout_marginTop="@dimen/larger_details_margin"
                             android:background="@color/accent_material_dark_1"/>
 
                     <TextView
@@ -116,8 +119,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/accent_material_dark_1"
-                            android:textSize="24sp"
-                            android:padding="24dp"
+                            android:textSize="@dimen/headers_and_ratings_text_size"
+                            android:padding="@dimen/general_details_padding"
                             android:text="@string/reviews"/>
 
                     <android.support.v7.widget.RecyclerView
@@ -133,7 +136,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|right"
-                android:layout_margin="16dp"
+                android:layout_margin="@dimen/fab_margin"
                 android:src="@drawable/ic_mark_favorite"
                 app:layout_anchorGravity="bottom|right|end"/>
     </android.support.design.widget.CoordinatorLayout>

@@ -41,6 +41,12 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
     /**
      * This method discards the old table of data and calls onCreate to recreate a new one.
      * This only occurs when the version number for this database (DATABASE_VERSION) is incremented.
+     *
+     * I know I should not just drop the table in production code, but I also know that what
+     * upgrade code would go here would depend on what changes there were when there actually
+     * *were* changes and users to be affected by them. :-) My reviewer gave me this link
+     * https://thebhwgroup.com/blog/how-android-sqlite-onupgrade
+     * which was very good and which I have bookmarked for the future.
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
