@@ -31,11 +31,10 @@ import android.widget.TextView;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements PosterAdapterOnClickHandler {
+    public static final String SORT_ORDER_FAVORITES = "favorites";
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String SORT_ORDER_POPULAR = "popular";
     private static final String SORT_ORDER_TOP_RATED = "top_rated";
-    public static final String SORT_ORDER_FAVORITES = "favorites";
-
     ActivityMainBinding mBinding;
     private String API_KEY;
     private RecyclerView mRecyclerView;

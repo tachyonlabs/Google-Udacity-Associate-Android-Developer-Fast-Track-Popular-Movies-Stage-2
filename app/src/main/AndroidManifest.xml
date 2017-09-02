@@ -29,7 +29,7 @@
         </activity>
         <meta-data
                 android:name="TMDB_API_KEY"
-                android:value="e0e306f511a9b358cd9bb16c06b53ba0"/>
+                android:value="your API key here"/>
 
         <provider
                 android:name="com.tachyonlabs.popularmoviesstage2.data.FavoritesContentProvider"

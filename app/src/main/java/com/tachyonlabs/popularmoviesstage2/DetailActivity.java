@@ -115,36 +115,6 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         }
     }
 
-    public class setMovieAsFavorite extends AsyncTask<Movie, Void, Uri> {
-        Movie movie;
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Uri doInBackground(Movie... params) {
-            // Insert new favorite data via a ContentResolver
-            // Create new empty ContentValues object
-            movie = params[0];
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_TITLE, movie.getTitle());
-            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_OVERVIEW, movie.getOverview());
-            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_POSTER_URL, movie.getPosterUrl());
-            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_USER_RATING, movie.getUserRating());
-            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_RELEASE_DATE, movie.getReleaseDate());
-            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_ID, movie.getId());
-            // Insert the content values via a ContentResolver
-            return getContentResolver().insert(FavoritesContract.Favorite.CONTENT_URI, contentValues);
-        }
-        @Override
-        protected void onPostExecute(Uri uri) {
-            if (uri != null) {
-                Toast.makeText(DetailActivity.this, movie.getTitle() + DetailActivity.this.getString(R.string.favorited), Toast.LENGTH_SHORT).show();
-            }
-        }
-   }
-
     private boolean isFavorited(String movieId) {
         // Has the movie already been favorited?
         String mSelectionClause = FavoritesContract.Favorite.COLUMN_MOVIE_ID + " = ?";
@@ -170,7 +140,44 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     @Override
     public void onClick(Trailer trailer) {
         // tapping a trailer thumbnail brings up the trailer
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_VIDEO_BASE_URL + trailer.getKey())));
+        Uri trailerUri = Uri.parse(YOUTUBE_VIDEO_BASE_URL + trailer.getKey());
+        Intent intent = new Intent(Intent.ACTION_VIEW, trailerUri);
+        // make sure the user has a web browser or YouTube client installed
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    public class setMovieAsFavorite extends AsyncTask<Movie, Void, Uri> {
+        Movie movie;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Uri doInBackground(Movie... params) {
+            // Insert new favorite data via a ContentResolver
+            // Create new empty ContentValues object
+            movie = params[0];
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_TITLE, movie.getTitle());
+            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_OVERVIEW, movie.getOverview());
+            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_POSTER_URL, movie.getPosterUrl());
+            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_USER_RATING, movie.getUserRating());
+            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_RELEASE_DATE, movie.getReleaseDate());
+            contentValues.put(FavoritesContract.Favorite.COLUMN_MOVIE_ID, movie.getId());
+            // Insert the content values via a ContentResolver
+            return getContentResolver().insert(FavoritesContract.Favorite.CONTENT_URI, contentValues);
+        }
+
+        @Override
+        protected void onPostExecute(Uri uri) {
+            if (uri != null) {
+                Toast.makeText(DetailActivity.this, movie.getTitle() + DetailActivity.this.getString(R.string.favorited), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     // using a background task, get the reviews and trailers data and display it
