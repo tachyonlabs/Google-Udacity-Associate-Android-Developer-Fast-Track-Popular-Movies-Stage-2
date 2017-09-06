@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapterOnCl
     private TextView tvErrorMessageDisplay;
     private ProgressBar pbLoadingIndicator;
     private String sortOrder;
+    private Movie[] movies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,19 @@ public class MainActivity extends AppCompatActivity implements PosterAdapterOnCl
         // display progress bar, and load and display posters in preferred sort order
         pbLoadingIndicator = mBinding.pbLoadingIndicator;
         sortOrder = getSortOrderSetting();
-        loadPosters(sortOrder);
+
+        if (savedInstanceState == null) {
+            loadPosters(sortOrder);
+        } else {
+            movies = (Movie[]) (savedInstanceState.getParcelableArray("movies"));
+            mPosterAdapter.setPosterData(movies);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArray("movies", movies);
+        super.onSaveInstanceState(outState);
     }
 
     public String getSortOrderSetting() {
@@ -104,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapterOnCl
         if (mCursor == null || mCursor.getCount() == 0) {
             showErrorMessage(getString(R.string.no_favorites_yet));
         } else {
-            Movie[] movies = new Movie[mCursor.getCount()];
+            movies = new Movie[mCursor.getCount()];
             int index = 0;
             while (mCursor.moveToNext()) {
                 Movie movie = new Movie();
@@ -242,9 +255,10 @@ public class MainActivity extends AppCompatActivity implements PosterAdapterOnCl
         }
 
         @Override
-        protected void onPostExecute(Movie[] movies) {
+        protected void onPostExecute(Movie[] theMovies) {
             pbLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movies != null) {
+            if (theMovies != null) {
+                movies = theMovies;
                 showPosters();
                 mPosterAdapter.setPosterData(movies);
             } else {
